@@ -2,15 +2,15 @@
 """Лабораторная работа №2.ipynb
 1. Базовые операции с DataFrame
 
-1.1 В файлах recipes_sample.csv и reviews_sample.csv находится информация об рецептах блюд и отзывах на эти рецепты соответственно. Загрузите данные из файлов в виде pd.DataFrame с названиями recipes и reviews. Обратите внимание на корректное считывание столбца с индексами в таблице reviews (безымянный столбец).
+1.1 В файлах ricepts_sample.csv и rev_sample.csv находится информация об рецептах блюд и отзывах на эти рецепты соответственно. Загрузите данные из файлов в виде pd.DataFrame с названиями ricepts и rev. Обратите внимание на корректное считывание столбца с индексами в таблице rev (безымянный столбец).
 """
 
 import numpy as np
 import pandas as pd
 
-recipes = pd.read_csv('/content/drive/MyDrive/recipes_sample.csv')
-reviews = pd.read_csv('/content/drive/MyDrive/reviews_sample.csv', index_col=0)
-reviews
+ricepts = pd.read_csv('/content/drive/MyDrive/ricepts_sample.csv')
+rev = pd.read_csv('/content/drive/MyDrive/rev_sample.csv', index_col=0)
+rev
 
 """1.2 Для каждой из таблиц выведите основные параметры:
 
@@ -20,148 +20,148 @@ reviews
 """
 
 #Таблица 1
-print('Таблица Recipes')
-print('Количетсво точек данных:', recipes.shape[0])
-print('Количество столбцов:', recipes.shape[1])
+print('Таблица ricepts')
+print('Количетсво точек данных:', ricepts.shape[0])
+print('Количество столбцов:', ricepts.shape[1])
 print('Тип данных каждого столбца:')
-print(recipes.dtypes)
+print(ricepts.dtypes)
 
 #Таблица 2
 print()
-print('Таблица Reviews')
-print('Количетсво точек данных:', reviews.shape[0])
-print('Количество столбцов:', reviews.shape[1])
+print('Таблица rev')
+print('Количетсво точек данных:', rev.shape[0])
+print('Количество столбцов:', rev.shape[1])
 print('Тип данных каждого столбца:')
-print(reviews.dtypes)
+print(rev.dtypes)
 
 """1.3 Исследуйте, в каких столбцах таблиц содержатся пропуски. Посчитайте долю строк, содержащих пропуски, в отношении к общему количеству строк."""
 
 #Таблица 1
-nullrows_total1 = recipes.shape[0] - recipes.dropna().shape[0]
-print('Количество пропусков в каждом из столбцов первой таблицы:\n', recipes.isna().sum())
-print('Доля строк, содержащих пропуски: ', (nullrows_total1/len(recipes.axes[0]))*100,'%',sep='' )
+nullrows_total1 = ricepts.shape[0] - ricepts.dropna().shape[0]
+print('Количество пропусков в каждом из столбцов первой таблицы:\n', ricepts.isna().sum())
+print('Доля строк, содержащих пропуски: ', (nullrows_total1/len(ricepts.axes[0]))*100,'%',sep='' )
 print()
 
 #Таблица 2
-nullrows_total_2 = reviews.shape[0] - reviews.dropna().shape[0]
-print('Количество пропусков в каждом из столбцов второй таблицы:\n', reviews.isna().sum())
-print('Доля строк, содержащих пропуски: ', (nullrows_total_2/len(reviews.axes[0]))*100,'%',sep='' )
+nullrows_total_2 = rev.shape[0] - rev.dropna().shape[0]
+print('Количество пропусков в каждом из столбцов второй таблицы:\n', rev.isna().sum())
+print('Доля строк, содержащих пропуски: ', (nullrows_total_2/len(rev.axes[0]))*100,'%',sep='' )
 
 """1.4 Рассчитайте среднее значение для каждого из числовых столбцов (где это имеет смысл)."""
 
-print("Данные для таблицы 1 - Recipes:")
-print('Среднее значение столбца minutes = ', recipes['minutes'].mean(),
-      '\nСреднее значение столбца n_steps = ', recipes['n_steps'].mean(),
-      '\nСреднее значение столбца n_ingredients = ', recipes['n_ingredients'].mean())
+print("Данные для таблицы 1 - ricepts:")
+print('Среднее значение столбца minutes = ', ricepts['minutes'].mean(),
+      '\nСреднее значение столбца n_steps = ', ricepts['n_steps'].mean(),
+      '\nСреднее значение столбца n_ingredients = ', ricepts['n_ingredients'].mean())
 print()
 
-print("Данные для таблицы  - Reviews:")
-print('Среднее значение столбца rating = ', reviews['rating'].mean())
+print("Данные для таблицы  - rev:")
+print('Среднее значение столбца rating = ', rev['rating'].mean())
 
 """1.5 Создайте серию из 10 случайных названий рецептов."""
 
-ten_random = pd.Series(recipes['name'].sample(n = 10))
+ten_random = pd.Series(ricepts['name'].sample(n = 10))
 ten_random
 
-"""1.6 Измените индекс в таблице reviews, пронумеровав строки, начиная с нуля."""
+"""1.6 Измените индекс в таблице rev, пронумеровав строки, начиная с нуля."""
 
-reviews.reset_index(drop=True)
+rev.reset_index(drop=True)
 
 """1.7 Выведите информацию о рецептах, время выполнения которых не больше 20 минут и кол-во ингредиентов в которых не больше 5."""
 
-recipes[(recipes.minutes <= 20) & (recipes.n_ingredients <= 5)]
+ricepts[(ricepts.minutes <= 20) & (ricepts.n_ingredients <= 5)]
 
 """Работа с датами в pandas
 
-2.1 Преобразуйте столбец submitted из таблицы recipes в формат времени. Модифицируйте решение задачи 1.1 так, чтобы считать столбец сразу в нужном формате.
+2.1 Преобразуйте столбец submitted из таблицы ricepts в формат времени. Модифицируйте решение задачи 1.1 так, чтобы считать столбец сразу в нужном формате.
 """
 
-recipes['submitted'] = pd.to_datetime(recipes['submitted'])
-print(recipes, recipes.dtypes, sep = '\n' )
+ricepts['submitted'] = pd.to_datetime(ricepts['submitted'])
+print(ricepts, ricepts.dtypes, sep = '\n' )
 
-recipes = pd.read_csv('recipes_sample.csv', sep = ',', header = 0, parse_dates = ['submitted'])
-print(recipes, recipes.dtypes, sep = '\n' )
+ricepts = pd.read_csv('ricepts_sample.csv', sep = ',', header = 0, parse_dates = ['submitted'])
+print(ricepts, ricepts.dtypes, sep = '\n' )
 
 """2.2 Выведите информацию о рецептах, добавленных в датасет не позже 2010 года."""
 
-recipes[recipes['submitted']<='2010-01-01']
+ricepts[ricepts['submitted']<='2010-01-01']
 
 """Работа со строковыми данными в pandas
 
-3.1 Добавьте в таблицу recipes столбец description_length, в котором хранится длина описания рецепта из столбца description.
+3.1 Добавьте в таблицу ricepts столбец description_length, в котором хранится длина описания рецепта из столбца description.
 """
 
-recipes = recipes.astype({'description' : 'string'})
-recipes['description_length']  = recipes['description'].str.len()
-recipes
+ricepts = ricepts.astype({'description' : 'string'})
+ricepts['description_length']  = ricepts['description'].str.len()
+ricepts
 
-"""3.2 Измените название каждого рецепта в таблице recipes таким образом, чтобы каждое слово в названии начиналось с прописной буквы."""
+"""3.2 Измените название каждого рецепта в таблице ricepts таким образом, чтобы каждое слово в названии начиналось с прописной буквы."""
 
-recipes['name'] = recipes['name'].str.title()
-recipes
+ricepts['name'] = ricepts['name'].str.title()
+ricepts
 
-"""3.3 Добавьте в таблицу recipes столбец name_word_count, в котором хранится количество слов из названии рецепта (считайте, что слова в названии разделяются только пробелами). Обратите внимание, что между словами может располагаться несколько пробелов подряд."""
+"""3.3 Добавьте в таблицу ricepts столбец name_word_count, в котором хранится количество слов из названии рецепта (считайте, что слова в названии разделяются только пробелами). Обратите внимание, что между словами может располагаться несколько пробелов подряд."""
 
-recipes['name_word_count'] = [len(x.split()) for x in recipes['name'].tolist()]
-recipes
+ricepts['name_word_count'] = [len(x.split()) for x in ricepts['name'].tolist()]
+ricepts
 
 """Группировки таблиц pd.DataFrame
 
 4.1 Посчитайте количество рецептов, представленных каждым из участников (contributor_id). Какой участник добавил максимальное кол-во рецептов?
 """
 
-c = recipes.groupby("contributor_id").size()
+c = ricepts.groupby("contributor_id").size()
 print('Количество рецептов, представленных каждым из участников', c,
       '\nУчастник, добавивший наибольшее количество рецептов: ',
       c[c == c.max()].index[0])
 
 """4.2 Посчитайте средний рейтинг к каждому из рецептов. Для скольких рецептов отсутствуют отзывы? Обратите внимание, что отзыв с нулевым рейтингом или не заполненным текстовым описанием не считается отсутствующим."""
 
-recipes.groupby('id').ngroups-reviews.groupby('recipe_id').ngroups
+ricepts.groupby('id').ngroups-rev.groupby('recipe_id').ngroups
 
 """4.3 Посчитайте количество рецептов с разбивкой по годам создания."""
 
-recipes.groupby(recipes.submitted.dt.year)['id'].count()
+ricepts.groupby(ricepts.submitted.dt.year)['id'].count()
 
 """Объединение таблиц pd.DataFrame
 
 5.1 При помощи объединения таблиц, создайте DataFrame, состоящий из четырех столбцов: id, name, user_id, rating. Рецепты, на которые не оставлен ни один отзыв, должны отсутствовать в полученной таблице. Подтвердите правильность работы вашего кода, выбрав рецепт, не имеющий отзывов, и попытавшись найти строку, соответствующую этому рецепту, в полученном DataFrame.
 """
 
-recipes_with_rating = pd.merge(recipes[['id', 'name']],
-                               reviews[['recipe_id', 'user_id', 'rating']],
+ricepts_with_rating = pd.merge(ricepts[['id', 'name']],
+                               rev[['recipe_id', 'user_id', 'rating']],
                                left_on='id',
                                right_on='recipe_id').drop('recipe_id', axis=1)
-print(recipes_with_rating)
+print(ricepts_with_rating)
 print()
 
-no_reviews = recipes[~recipes['id'].isin(reviews['recipe_id'])]
+no_rev = ricepts[~ricepts['id'].isin(rev['recipe_id'])]
 
-recipe_without_rating = no_reviews.sample()
-print(recipe_without_rating.isin(recipes_with_rating)['name'])
+recipe_without_rating = no_rev.sample()
+print(recipe_without_rating.isin(ricepts_with_rating)['name'])
 
 """5.2 При помощи объединения таблиц и группировок, создайте DataFrame, состоящий из трех столбцов: recipe_id, name, review_count, где столбец review_count содержит кол-во отзывов, оставленных на рецепт recipe_id. У рецептов, на которые не оставлен ни один отзыв, в столбце review_count должен быть указан 0. Подтвердите правильность работы вашего кода, выбрав рецепт, не имеющий отзывов, и найдя строку, соответствующую этому рецепту, в полученном DataFrame."""
 
-new_recipes = recipes.rename(columns={'id': 'recipe_id'})
-review_count = reviews.groupby('recipe_id', as_index=False)['review'].count()
-recipes_reviews = pd.merge(
-                    new_recipes[['recipe_id', 'name']],
+new_ricepts = ricepts.rename(columns={'id': 'recipe_id'})
+review_count = rev.groupby('recipe_id', as_index=False)['review'].count()
+ricepts_rev = pd.merge(
+                    new_ricepts[['recipe_id', 'name']],
                     review_count,
                     how='left'
                 ).fillna(0)
 
-recipes_reviews = recipes_reviews.rename(columns={'review': 'review_count'})
-print(recipes_reviews)
+ricepts_rev = ricepts_rev.rename(columns={'review': 'review_count'})
+print(ricepts_rev)
 print()
 
-no_reviews2 = new_recipes[~new_recipes['recipe_id'].isin(reviews['recipe_id'])]
+no_rev2 = new_ricepts[~new_ricepts['recipe_id'].isin(rev['recipe_id'])]
 
-recipe_without_reviews = no_reviews2.sample()
-print(recipe_without_reviews.isin(recipes_reviews)['recipe_id'])
+recipe_without_rev = no_rev2.sample()
+print(recipe_without_rev.isin(ricepts_rev)['recipe_id'])
 
 """5.3. Выясните, рецепты, добавленные в каком году, имеют наименьший средний рейтинг?"""
 
-min_data = pd.merge(recipes, reviews, left_on ='id', right_on = 'recipe_id')
+min_data = pd.merge(ricepts, rev, left_on ='id', right_on = 'recipe_id')
 min_year = min_data.groupby(pd.Grouper(key='submitted', freq='Y'))['rating'].mean().idxmin().year
 print(f'Наименьший средний рейтинг был в {min_year} году')
 
@@ -170,8 +170,8 @@ print(f'Наименьший средний рейтинг был в {min_year} 
 6.1 Отсортируйте таблицу в порядке убывания величины столбца name_word_count и сохраните результаты выполнения заданий 3.1-3.3 в csv файл.
 """
 
-recipes = recipes.sort_values(by=['name_word_count'], ascending=False)
-recipes.to_csv("new_data.csv")
+ricepts = ricepts.sort_values(by=['name_word_count'], ascending=False)
+ricepts.to_csv("new_data.csv")
 
 """6.2 Воспользовавшись pd.ExcelWriter, cохраните результаты 5.1 и 5.2 в файл: на лист с названием Рецепты с оценками сохраните результаты выполнения 5.1; на лист с названием Количество отзывов по рецептам сохраните результаты выполнения 5.2."""
 
@@ -179,9 +179,9 @@ import pandas as pd
 
 recipe_rating = pd.DataFrame({'Recipe': ['Recipe1', 'Recipe2', 'Recipe3'],
                               'Rating': [4.5, 3.7, 5.0]})
-reviews_count_df = pd.DataFrame({'Recipe': ['Recipe1', 'Recipe2', 'Recipe3'],
-                                 'Reviews Count': [10, 5, 8]})
+rev_count_df = pd.DataFrame({'Recipe': ['Recipe1', 'Recipe2', 'Recipe3'],
+                                 'rev Count': [10, 5, 8]})
 
 with pd.ExcelWriter('new_datasets.xlsx', engine='xlsxwriter') as writer:
     recipe_rating.to_excel(writer, sheet_name='Рецепты с оценками', index=False)
-    reviews_count_df.to_excel(writer, sheet_name='Количество отзывов по рецептам', index=False)
+    rev_count_df.to_excel(writer, sheet_name='Количество отзывов по рецептам', index=False)
