@@ -1,0 +1,290 @@
+# -*- coding: utf-8 -*-
+"""Лабораторная работа №5.ipynb
+
+
+
+1. В файле `average_ratings.npy` содержится информация о среднем рейтинге 3 рецептов за период с 01.01.2019 по 30.12.2021. При помощи пакета `matplotlib` в _одной системе координат_ (на одной картинке) изобразите три временных ряда, соответствующих средним рейтингам этих рецептов. \n", "\n",
+    "По горизонтальной оси располагается номер дня (0, 1, 2, ...), по вертикальной - средний рейтинг рецептов в этот день. \n",
+    "\n",
+    "Названия рецептов и их индексы в файле `average_ratings.npy`:\n",
+    "```\n",
+    "0: waffle iron french toast\n",
+    "1: zwetschgenkuchen bavarian plum cake\n",
+    "2: lime tea\n",
+    "```\n",
+    "\n",
+    "Результатом работы является визуализация, на которой:\n",
+    "* добавлена подпись горизонтальной оси с текстом \"Номер дня\"\n",
+    "* добавлена подпись вертикальной оси с текстом \"Средний рейтинг\"\n",
+    "* добавлена подпись рисунка с текстом \"Изменение среднего рейтинга трех рецептов\"\n",
+    "* каждый из временных рядов имеет уникальный цвет\n",
+    "* добавлена легенда, на которой отображается название каждого из рецептов\n",
+    "\n",
+    "_Примечание_ : для считывания файла воспользуйтесь функцией `np.load`.
+"""
+
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+average_ratings = np.load('/content/drive/MyDrive/average_ratings.npy')
+recipes = ["Waffle Iron French Toast", "Zwetschgenkuchen Bavarian Plum Cake", "Lime Tea"]
+
+sns.set(style="darkgrid")
+
+plt.figure(figsize=(12, 8))
+
+colors = ['#1f77b4', '#ff7f0e', '#2ca02c']
+
+for i in range(len(recipes)):
+    plt.plot(average_ratings[:, i], label=recipes[i], color=colors[i], linewidth=2.5, marker='o')
+
+plt.xlabel("Day Number", fontsize=14, fontweight='bold')
+plt.ylabel("Average Rating", fontsize=14, fontweight='bold')
+plt.title("Trend of Average Ratings for Three Recipes", fontsize=16, fontweight='bold', color='#333333')
+plt.legend(title='Recipes', fontsize=12, title_fontsize='13')
+
+plt.xticks(fontsize=12)
+plt.yticks(fontsize=12)
+
+plt.grid(True, which='both', linestyle='--', linewidth=0.5, color='gray')
+plt.gca().set_facecolor('#F5F5F5')
+
+for i in range(len(recipes)):
+    max_rating = np.max(average_ratings[:, i])
+    max_day = np.argmax(average_ratings[:, i])
+    plt.annotate(f'Max: {max_rating:.1f}',
+                 xy=(max_day, max_rating),
+                 xytext=(max_day+0.5, max_rating+0.2),
+                 arrowprops=dict(facecolor='black', arrowstyle='->'),
+                 fontsize=12, color=colors[i])
+
+plt.tight_layout()
+plt.show()
+
+"""2. Измените визуализацию, полученную в задании 1, таким образом, чтобы по горизонтальной оси отображались года, а между двумя соседними годами располагались засечки, соответствующие месяцам. Для этого создайте диапазон дат от 01.01.2019 по 30.12.2021 с шагом в один день (например, [вот так](https://pandas.pydata.org/docs/reference/api/pandas.date_range.html)) и используйте этот диапазон при вызове метода `plot`. Далее настройте `major_locator` и `minor_locator` горизонтальной оси (подробнее см. [здесь](https://matplotlib.org/stable/gallery/text_labels_and_annotations/date.html))\n",
+    "\n",
+    "Примените к получившемуся рисунку цвета графиков, подписи, легенду из задания 1. Измените подпись горизонтальной оси, написав там слово \"Дата\".\n"
+"""
+
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+import matplotlib.dates as mdates
+import seaborn as sns
+
+average_ratings = np.load('/content/drive/MyDrive/average_ratings.npy')
+average_ratings = average_ratings.T
+
+dates = pd.date_range(start='2019-01-01', end='2021-12-30')
+
+recipes = ["Waffle Iron French Toast", "Zwetschgenkuchen Bavarian Plum Cake", "Lime Tea"]
+
+sns.set(style="darkgrid")
+
+plt.figure(figsize=(12, 8))
+
+for i in range(len(recipes)):
+    plt.plot(dates, average_ratings[:, i], label=recipes[i])
+
+plt.xlabel("Date", fontsize=14, fontweight='bold')
+plt.ylabel("Average Rating", fontsize=14, fontweight='bold')
+plt.title("Trend of Average Ratings for Three Recipes", fontsize=16, fontweight='bold', color='#333333')
+plt.legend(title='Recipes', fontsize=12, title_fontsize='13')
+
+plt.xticks(fontsize=12)
+plt.yticks(fontsize=12)
+
+plt.grid(True, which='both', linestyle='--', linewidth=0.5, color='gray')
+plt.gca().set_facecolor('#F5F5F5')
+
+plt.gca().xaxis.set_major_locator(mdates.YearLocator())
+plt.gca().xaxis.set_minor_locator(mdates.MonthLocator())
+plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
+
+plt.tight_layout()
+plt.show()
+
+"""  3. Измените визуализацию, полученную в задании 2, разбив одну картинку на три, расположенных друг под другом. Три изображения должны иметь одну общую горизонтальную ось (каждое изображение засечки в нижней части, но значения этих засечек находятся только под самым нижним изображением). Примените к получившемуся рисунку цвета графиков, подписи, легенду из задания 2.
+
+"""
+
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+import matplotlib.dates as mdates
+import seaborn as sns
+
+
+average_ratings = np.load('/content/drive/MyDrive/average_ratings.npy')
+average_ratings = average_ratings.T
+
+dates = pd.date_range(start='2019-01-01', end='2021-12-30')
+
+recipes = ["Waffle Iron French Toast", "Zwetschgenkuchen Bavarian Plum Cake", "Lime Tea"]
+
+fig, axes = plt.subplots(3, 1, sharex=True, figsize=(14, 6))
+
+sns.set(style="darkgrid")
+
+for i, ax in enumerate(axes):
+    ax.plot(dates, average_ratings[:, i], label=recipes[i])
+    ax.set_ylabel("Average Rating", fontsize=12, fontweight='bold')
+    ax.legend(fontsize=10)
+
+axes[-1].set_xlabel("Date", fontsize=12, fontweight='bold')
+axes[0].set_title("Trend of Average Ratings for Three Recipes", fontsize=14, fontweight='bold')
+
+axes[-1].xaxis.set_major_locator(mdates.YearLocator())
+axes[-1].xaxis.set_minor_locator(mdates.MonthLocator())
+axes[-1].xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
+
+plt.tight_layout()
+plt.show()
+
+"""4. В файле `visitors.npy` представлена информация о количестве посетителей сайта в течении первых 100 дней после объявления сайтом акции. Постройте график изменения количества пользователей в зависимости от дня в двух вариантах, расположенных рядом по горизонтале. В обоих случаях изобразите график в виде ломаной, но в первом случае оставьте линейный масштаб осей, а во втором случае сделайте вертикальную ось в логарифмическом масштабе. Добавьте на обе картинки подпись над этим графиком к текстом $y(x)=\\lambda e^{-\\lambda x}$\n",
+    "\n",
+    "Добавьте на оба изображения красную горизонтальную линию на уровне $y=100$. Добавьте на обе картинки подпись над этой линией с текстом $y(x)=100$\n",
+    "\n",
+    "Добавьте на оба изображения подписи осей; горизонтальную ось подпишите текстом \"Количество дней с момента акции\", вертикальную - \"Число посетителей\".\n",
+    "\n",
+    "Добавьте общий заголовок для фигуры с текстом \"Изменение количества пользователей в линейном и логарифмическом масштабе\".\n
+"""
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+visitors = np.load('/content/drive/MyDrive/visitors.npy')
+
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
+
+ax1.plot(visitors)
+ax1.axhline(y=100, color='r', linestyle='--')
+ax1.set_title('линейный масштаб', fontsize=14, fontweight='bold')
+ax1.set_xlabel('Количество дней с момента акции', fontsize=12, fontweight='bold')
+ax1.set_ylabel('Число посетителей', fontsize=12, fontweight='bold')
+ax1.text(50, 105, '$y(x)=100$', color='red', fontsize=12)
+ax1.text(50, visitors.max() * 0.8, 'y(x)=lambdae−lambdax', fontsize=12)
+
+ax2.plot(visitors)
+ax2.set_yscale('log')
+ax2.axhline(y=100, color='r', linestyle='--')
+ax2.set_title('логарифмический масштаб', fontsize=14, fontweight='bold')
+ax2.set_xlabel('Количество дней с момента акции', fontsize=12, fontweight='bold')
+ax2.set_ylabel('Число посетителей', fontsize=12, fontweight='bold')
+ax2.text(50, 105, '$y(x)=100$', color='red', fontsize=12)
+ax2.text(50, visitors.max() * 0.8, 'y(x)=lambdae−lambdax', fontsize=12)
+
+fig.suptitle('Изменение количества пользователей в линейном и логарифмическом масштабе', fontsize=16, fontweight='bold')
+
+plt.show()
+
+""" 5. Назовем рецепты короткими, если они занимают строго меньше 5 минут; средними, если они занимают от 5 до 50 минут (не включая 50), и длинными, если они занимают от 50 минут и больше. Сгруппируйте все рецепты по данному признаку и для каждой группы посчитайте 2 величины: среднее количество шагов рецептов в группе и размер группы. При помощи методов структур `pandas` постройте столбчатую диаграмму, где каждый столбец означает группу (короткие, средние или длинные рецепты), а высота столбца обозначает среднее количество шагов рецептов в группе. Рядом по горизонтали разместите круговую диаграмму, на которой отображены размеры каждой из групп.\n",
+    "\n",
+    "Добавьте следующие подписи:\n",
+    "* по горизонтальной оси под столбчатой диаграммой напишите \"Группа рецептов\"\n",
+    "* по вертикальной оси слева от столбчатой диаграммы напишите \"Средняя длительность\"\n",
+    "* над круговой диаграммой напишите \"Размеры групп рецептов\"
+"""
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+recipes = pd.read_csv('/content/drive/MyDrive/recipes_sample.csv')
+
+recipes['duration_group'] = pd.cut(recipes['minutes'], bins=[0, 5, 50, float('inf')], labels=['короткие', 'средние', 'длинные'])
+grouped = recipes.groupby('duration_group').agg({'n_steps': 'mean', 'id': 'count'}).rename(columns={'id': 'size', 'n_steps': 'average_steps'})
+
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
+
+grouped['average_steps'].plot(kind='bar', ax=ax1)
+ax1.set_xlabel('Группа рецептов', fontweight='bold')
+ax1.set_ylabel('Средняя длительность', fontweight='bold')
+ax1.set_title('Среднее количество шагов в зависимости от группы', fontweight='bold')
+
+grouped['size'].plot(kind='pie', autopct='%1.1f%%', ax=ax2)
+ax2.set_ylabel('')
+ax2.set_title('Размеры групп рецептов', fontweight='bold')
+
+plt.show()
+
+"""  6. Из всего множества отзывов оставьте только те, которые были даны в 2008 и 2009 годах. Воспользовавшись возможностями метода `pd.DataFrame.plot.hist`, постройте 2 гистограммы столбца `rating`. Гистограммы должны быть расположены рядом по горизонтали. Левая гистограмма соотвествует 2008 году, правая - 2009 году. Добавьте общую подпись для рисунка с текстом \"Гистограммы рейтинга отзывов в 2008 и 2009 годах\". Добейтесь того, чтобы подпись вертикальной оси правого рисунка не \"наезжала\" на левый рисунок."""
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+reviews = pd.read_csv('/content/drive/MyDrive/reviews_sample.csv')
+
+reviews['date'] = pd.to_datetime(reviews['date'], errors='coerce')
+
+reviews_2008 = reviews[reviews['date'].dt.year == 2008]
+reviews_2009 = reviews[reviews['date'].dt.year == 2009]
+
+plt.figure(figsize=(14, 6))
+
+plt.subplot(1, 2, 1)
+reviews_2008['rating'].plot.hist(edgecolor='black', bins=5, color='skyblue', alpha=0.7)
+plt.xlabel('Рейтинг', fontweight='bold')
+plt.ylabel('Частота', fontweight='bold')
+plt.title('Распределение рейтинга отзывов в 2008 году', fontweight='bold')
+
+plt.subplot(1, 2, 2)
+reviews_2009['rating'].plot.hist(edgecolor='black', bins=5, color='lightgreen', alpha=0.7)
+plt.xlabel('Рейтинг', fontweight='bold')
+plt.ylabel('Частота', fontweight='bold')
+plt.title('Распределение рейтинга отзывов в 2009 году', fontweight='bold')
+
+plt.suptitle('Гистограммы рейтинга отзывов в 2008 и 2009 годах', fontsize=16, fontweight='bold', y=1.05)
+plt.tight_layout()
+plt.show()
+
+"""7. При помощи пакета `seaborn` постройте диаграмму рассеяния двух столбцов из таблицы `recipes`: `n_steps` и `n_ingredients`. Укажите в качестве группирующей переменной (hue) категориальную длительность рецепта (короткий, средний или длинные; см. задание 5). \n",
+    "\n",
+    "Добавьте заголовок рисунка \"Диаграмма рассеяния n_steps и n_ingredients\"\n",
+    "\n",
+    "Прокомментируйте, наблюдается ли визуально линейная зависимость между двумя этими переменными. Ответ оставьте в виде текстовой ячейки под изображением.
+"""
+
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+recipes = pd.read_csv('/content/drive/MyDrive/recipes_sample.csv')
+
+recipes['duration_group'] = pd.cut(recipes['minutes'], bins=[0, 5, 50, float('inf')], labels=['короткие', 'средние', 'длинные'])
+
+plt.figure(figsize=(14, 6))
+scatter_plot = sns.scatterplot(data=recipes, x='n_steps', y='n_ingredients', hue='duration_group', palette='Set1', alpha=0.8)
+plt.title('Диаграмма рассеяния n_steps и n_ingredients', fontweight='bold')
+scatter_plot.set_xlabel('n_steps', fontweight='bold')
+scatter_plot.set_ylabel('n_ingredients', fontweight='bold')
+
+plt.show()
+
+""" 8. Объедините две таблицы `recipes` и `reviews` и постройте корреляционную матрицу на основе столбцов \"minutes\", \"n_steps\", \"n_ingredients\" и \"rating\". При помощи пакета `seaborn` визуализируйте полученную матрицу в виде тепловой карты (heatmap). \n",
+    "\n",
+    "Добавьте в ячейки тепловой карты подписи (значения к-та корреляции). Измените цветовую палитру на `YlOrRd`. \n",
+    "\n",
+    "Добавьте заголовок рисунка \"Корреляционная матрица числовых столбцов таблиц recipes и reviews\"
+"""
+
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+recipes = pd.read_csv('/content/drive/MyDrive/recipes_sample.csv')
+reviews = pd.read_csv('/content/drive/MyDrive/reviews_sample.csv')
+
+recipes.rename(columns={'id': 'recipe_id'}, inplace=True)
+
+merged_data = pd.merge(recipes, reviews, on='recipe_id', how='inner')
+
+print("\nПример объединенных данных:\n", merged_data.head())
+
+correlation_matrix = merged_data[['minutes', 'n_steps', 'n_ingredients', 'rating']].corr()
+
+plt.figure(figsize=(10, 8))
+heatmap = sns.heatmap(correlation_matrix, annot=True, cmap='YlOrRd', fmt=".2f", linewidths=.5)
+heatmap.set_title('Корреляционная матрица числовых столбцов таблиц recipes и reviews', fontweight='bold')
+
+plt.show()
